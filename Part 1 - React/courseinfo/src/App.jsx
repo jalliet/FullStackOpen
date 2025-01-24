@@ -1,53 +1,37 @@
-{/*
-  const App = () => {
-  const course = 'Half Stack application development'
-  const part1 = 'Fundamentals of React'
-  const ex1 = 10
-  const part2 = 'Using props to pass data'
-  const ex2 = 7
-  const part3 = 'State of a component'
-  const ex3 = 14
-
-  const courseParts = [
-    { part: part1, exercise: ex1 },
-    { part: part2, exercise: ex2 },
-    { part: part3, exercise: ex3 }
-  ]
-
-  return (
-    <div>
-      <Header course={course} />
-      {/*
-      <Content part={part1} exercise={ex1} />
-      <Content part={part2} exercise={ex2} />
-      <Content part={part3} exercise={ex3} />
-      
-      <RefactoredContent parts={courseParts} />
-      <Total exsTotal={courseParts.reduce((sum, element) => sum + element.exercise, 0)} />
-    </div>
-  )
-} */}
-
 const App = () => {
-  const course = 'Half Stack application development'
-  const part1 = {
-    name: 'Fundamentals of React',
-    exercises: 10
+  const course = {
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7
+      },
+      {
+        name: 'State of a component',
+        exercises: 14
+      }
+    ]
   }
-  const part2 = {
-    name: 'Using props to pass data',
-    exercises: 7
+
+  const sumExs = (parts) => {
+    return parts.reduce((sum, part) => sum + part.exercises, 0)
   }
-  const part3 = {
-    name: 'State of a component',
-    exercises: 14
-  }
-  let courseParts = [part1, part2, part3]
+
   return (
     <>
-      <Header course={course} />
-      <RefactoredContent parts={courseParts} />
-      <Total exsTotal={courseParts.reduce((sum, part) => sum + part.exercises, 0)} />
+      <Header 
+        course={course.name} 
+      />
+      <Content 
+        parts={course.parts} 
+      />
+      <Total 
+        exsTotal={sumExs(course.parts)}
+      />
     </>
   )
 }
@@ -61,43 +45,25 @@ const Header = (props) => {
 
 }
 
-const Content = (props) => {
+const Content = ({ parts }) => {
   console.log("Content component log:")
-  console.log(props)
-  return (
-    <>
-      <p>
-        {props.part} {props.exercise}
-      </p>
-    </>
-  )
-}
-
-const RefactoredContent = ({ parts }) => {
-  console.log("RefactoredContent component log:")
   console.log(parts)
   return (
     <>
-      {parts.map(element => (
-        <Part key={element.name} part={element.name} exercise={element.exercises} />
+      {parts.map((part) => (
+        <Part 
+          key={part.name} 
+          details={part}
+        />
       ))}
-      {/*
-      parts.map(element => (
-        <p key={element.part}>{element.part} {element.exercise}</p>
-      ))*/}
-      {/*
-      <Part part={parts[0].part} exercise={parts[0].exercise} />
-      <Part part={parts[1].part} exercise={parts[1].exercise} />
-      <Part part={parts[2].part} exercise={parts[2].exercise} />
-      */}
     </>
   )
 }
 
-const Part = (props) => {
+const Part = ({ details }) => {
   return (
     <>
-      <p>{props.part}: {props.exercise}</p>
+      <p>{details.name}: {details.exercises}</p>
     </>
   )
 }
@@ -110,7 +76,6 @@ const Total = (props) => {
       <p>Total number of exs: {props.exsTotal}</p>
     </>
   )
-
 }
 
 export default App
