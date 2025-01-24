@@ -22,7 +22,7 @@ const App = () => {
       <Content part={part3} exercise={ex3} />
       */}
       <RefactoredContent parts={courseParts} />
-      <Total exsTotal={ex1 + ex2 + ex3} />
+      <Total exsTotal={courseParts.reduce((sum, element) => sum + element.exercise, 0)} />
     </div>
   )
 }
