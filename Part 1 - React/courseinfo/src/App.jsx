@@ -1,4 +1,5 @@
-const App = () => {
+{/*
+  const App = () => {
   const course = 'Half Stack application development'
   const part1 = 'Fundamentals of React'
   const ex1 = 10
@@ -20,10 +21,34 @@ const App = () => {
       <Content part={part1} exercise={ex1} />
       <Content part={part2} exercise={ex2} />
       <Content part={part3} exercise={ex3} />
-      */}
+      
       <RefactoredContent parts={courseParts} />
       <Total exsTotal={courseParts.reduce((sum, element) => sum + element.exercise, 0)} />
     </div>
+  )
+} */}
+
+const App = () => {
+  const course = 'Half Stack application development'
+  const part1 = {
+    name: 'Fundamentals of React',
+    exercises: 10
+  }
+  const part2 = {
+    name: 'Using props to pass data',
+    exercises: 7
+  }
+  const part3 = {
+    name: 'State of a component',
+    exercises: 14
+  }
+  let courseParts = [part1, part2, part3]
+  return (
+    <>
+      <Header course={course} />
+      <RefactoredContent parts={courseParts} />
+      <Total exsTotal={courseParts.reduce((sum, part) => sum + part.exercises, 0)} />
+    </>
   )
 }
 
@@ -54,7 +79,7 @@ const RefactoredContent = ({ parts }) => {
   return (
     <>
       {parts.map(element => (
-        <Part key={element.part} part={element.part} exercise={element.exercise} />
+        <Part key={element.name} part={element.name} exercise={element.exercises} />
       ))}
       {/*
       parts.map(element => (
@@ -72,7 +97,7 @@ const RefactoredContent = ({ parts }) => {
 const Part = (props) => {
   return (
     <>
-      <p>{props.part} {props.exercise}</p>
+      <p>{props.part}: {props.exercise}</p>
     </>
   )
 }
