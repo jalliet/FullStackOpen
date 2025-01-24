@@ -84,8 +84,12 @@ const Stats = ({ statsData }) => {
   return (
     <>
       <h2>Statistics</h2>
+
       {Object.entries(statsDetails).map(([text, value]) => (
-        <StatLine key={text} text={text} value={value} />
+        <tr>
+          <td>{text[0].toUpperCase() + text.slice(1)}</td>
+          <td>{value}</td>
+        </tr>
       ))}
       
     </>
