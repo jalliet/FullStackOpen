@@ -1,3 +1,4 @@
+import { use } from 'react'
 import { useState } from 'react'
 
 const App = () => {
@@ -16,6 +17,7 @@ const App = () => {
     anecdotes.reduce((accumulator, _, idx) => ({...accumulator, [idx]: 0}), {})
   )
   const [selected, setSelected] = useState(0)
+  const [maxUpvotedIdx, setMaxUpvotesIdx] = useState(0)
   
 
   const handleNextAnecdote = () => {
@@ -27,17 +29,27 @@ const App = () => {
   }
 
   const handleVotes = () => {
-    const copy = { ...anecdoteVotes }
+    let copy = { ...anecdoteVotes }
     copy[selected] += 1
+    let newMaxUpvotedIdx = Object.entries(copy).reduce((oldMaxIdx, [newMaxIdx, votes]) => 
+      votes > copy[oldMaxIdx] ? newMaxIdx : oldMaxIdx
+    , '0');
     setAnecdoteVotes(copy)
+    setMaxUpvotesIdx(newMaxUpvotedIdx)
   }
 
   return (
     <>
-      {anecdotes[selected]}
+      <h2>Anecdote of the Day</h2>
+      <p>{anecdotes[selected]}</p>
       <Votes votes={anecdoteVotes[selected]} />
       <button onClick={handleVotes}>Upvote</button> &nbsp;
       <button onClick={handleNextAnecdote}>Next Anecdote</button> 
+
+      <h2>Most Upvoted Anecdote</h2>
+      <p>{anecdotes[maxUpvotedIdx]}</p>
+      <Votes votes={anecdoteVotes[maxUpvotedIdx]} />
+
     </>
   )
 }
