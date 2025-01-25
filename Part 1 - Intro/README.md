@@ -1,0 +1,1 @@
+In this part, I familiarize my with React, and this section serves as a refresher for some JS features that are important for understanding React.
