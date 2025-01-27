@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Numbers } from './Numbers/Numbers'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -6,16 +7,30 @@ const App = () => {
   ]) 
   const [newName, setNewName] = useState('')
 
+  const personFound = () => {
+    const found = persons.find(person => person.name.toLowerCase() === newName.toLowerCase())
+    return found ? found.name : null
+  }
+
+  const validateNewName = () => {
+    // Checks if newName exists (not '') and is unique
+    return newName && !personFound()
+  }
+
   const addName = (event) => {
     event.preventDefault()
     console.log(`Button clicked and created event: ${event.target}`)
-    if ( newName ) {
+    if ( validateNewName() ) {
       let latestName = {
         'name': newName,
         'id': persons.length + 1
       }
       setPersons(persons.concat(latestName))
       setNewName('')
+    } else if (!newName) {
+      alert(`Name input cannot be empty`)
+    } else {
+      alert(`Name ${newName} is already in persons (#${persons.indexOf(personFound()) + 1})`)
     }
   }
 
@@ -41,24 +56,6 @@ const App = () => {
       <Numbers persons={persons}/>
 
     </div>
-  )
-}
-
-const Numbers = ({ persons }) => {
-  return (
-    <>
-      {persons.map((person) => (
-        <Person key={person.id} person={person}/>
-      ))}
-    </>
-  )
-}
-
-const Person = ({ person }) => {
-  return (
-    <p>
-      Person {person.id}: {person.name}
-    </p>
   )
 }
 
