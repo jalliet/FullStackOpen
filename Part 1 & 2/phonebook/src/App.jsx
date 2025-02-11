@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Numbers } from './Numbers/Numbers'
-import { InputField } from './InputField/InputField'
+import { PersonForm } from './PersonForm/PersonForm'
+import { PersonFilter } from './PersonFilter/PersonFilter'
 
 const App = () => {
   const [people, setPeople] = useState([
@@ -26,64 +27,12 @@ const App = () => {
     return found ? found.name : null
   }
 
-  const validateNewName = () => {
-    // Checks if newName exists (aka not '') and is unique
-    return newName && !nameFound()
-  }
-
   const handleNameChange = (event) => {
     // Event handler
     // Log shows evolution of state as input typed out
     console.log(`Change to name input: ${event.target.value}`)
     setNewName(event.target.value)
   }
-
-  /*
-  const addName = (event) => {
-
-    // Validates the name input and acts accordingly:
-    // Adds to people if name exists and is unique
-    // Displays appropriate alert message otherwise
-    event.preventDefault()
-    console.log(`Button clicked and created event: ${event.target}`)
-    if ( validateNewName() ) {
-      let latestPerson = {
-        'name': newName,
-        'id': people.length + 1
-      }
-      setPeople(people.concat(latestPerson))
-    } else {
-      const alertMessage = !newName 
-      ? "Name input cannot be empty"
-      : `Name ${newName} is already in people (#${people.indexOf(nameFound()) + 1})`;
-      alert(alertMessage);
-    }
-    setNewName('')
-
-  }
-
-  const addNumber = (event) => {
-
-    event.preventDefault()
-    console.log(`Button clicked and created event: ${event.target}`)
-    const isNumeric = (string) => string == Number.parseInt(string)
-
-    const alertMessage = !isNumeric(newNumber) 
-    ? "Input must be numeric, and be a valid phone number"
-    : ``;
-    if ( alertMessage ) {
-      alert(alertMessage);
-    } else {
-      let latestNumber = {
-        'number': newNumber,
-        'id': people.length + 1
-      }
-      setPeople(people.concat(latestNumber))
-    }
-    setNewNumber('')
-
-  }
-  */
 
   const numberFound = () => {
     // Attempts to find nweName in people
@@ -107,6 +56,8 @@ const App = () => {
     return { nameValid, numberValid, numberIsUnique  }
   }
 
+  const capitalise = (string) => string.charAt(0).toUpperCase() + string.slice(1)
+
   const addPerson = (event) => {
 
     event.preventDefault()
@@ -124,7 +75,7 @@ const App = () => {
 
     // Adding new person object
     const latestPerson = {
-      name: newName,
+      name: newName.split(' ').map(capitalise).join(' '),
       number: newNumber,
       id: people.length + 1
     }
@@ -135,33 +86,38 @@ const App = () => {
 
   }
 
+  const personFormHandlers = [ addPerson, handleNameChange, handleNumberChange ]
+  const personFormValues = [ newName, newNumber ]
+
+  const filteredPeople = () => {
+    if (!query) return people
+    return people.filter(person => 
+      person.name.toLowerCase().includes(query.toLowerCase())
+    )
+  }
+
+  const showNoContacts = () => {
+    return query !== '' && filteredPeople().length === 0
+  }
+
   return (
     <>
       <h2>Phonebook</h2>
 
       <div>
         <h3>Search by name:</h3>
-        <InputField value={query} onChange={handleQueryChange} key={`query`} />
+        <PersonFilter value={query} onChange={handleQueryChange} key={`query`} />
       </div>
 
       <h3>Add a new contact</h3>
-      <form onSubmit={addPerson}>
-
-        <div>
-          Name: <InputField value={newName} onChange={handleNameChange} label={'name'} />
-          <br/>
-          Phone number: <InputField value={newNumber} onChange={handleNumberChange} label={'phone-number'} />
-        </div>
-        <div>
-          <button type="submit">Add Person</button>
-        </div>
-        
-      </form>
+      <PersonForm handlers={personFormHandlers} values={personFormValues} />
 
       <h2>Numbers</h2>
-      <Numbers people={people.filter((person) => (
-        person.name.toLowerCase().includes(query.toLowerCase())
-      ))}/>
+      {showNoContacts() ? (
+        <p>Query '{capitalise(query)}' not found in phonebook</p>
+      ) : (
+        <Numbers people={filteredPeople()} />
+      )}
     </>
   )
 
