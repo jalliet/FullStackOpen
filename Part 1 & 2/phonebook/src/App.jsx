@@ -4,10 +4,21 @@ import { InputField } from './InputField/InputField'
 
 const App = () => {
   const [people, setPeople] = useState([
-    { id: 1, name: 'Arto Hellas', number: 123456879 }
+    { id: 1, name: 'Arto Hellas', number: 123456879 },
+    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
+    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
+    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
   ]) 
+  const [query, setQuery] = useState('')
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+
+  const handleQueryChange = (event) => {
+    // Event handler
+    // Log shows evolution of state as input typed out
+    console.log(`Change query input: ${event.target.value}`)
+    setQuery(event.target.value)
+  }
 
   const nameFound = () => {
     // Attempts to find nweName in people
@@ -127,7 +138,15 @@ const App = () => {
   return (
     <>
       <h2>Phonebook</h2>
+
+      <div>
+        <h3>Search by name:</h3>
+        <InputField value={query} onChange={handleQueryChange} key={`query`} />
+      </div>
+
+      <h3>Add a new contact</h3>
       <form onSubmit={addPerson}>
+
         <div>
           Name: <InputField value={newName} onChange={handleNameChange} label={'name'} />
           <br/>
@@ -136,12 +155,16 @@ const App = () => {
         <div>
           <button type="submit">Add Person</button>
         </div>
+        
       </form>
 
       <h2>Numbers</h2>
-      <Numbers people={people}/>
+      <Numbers people={people.filter((person) => (
+        person.name.toLowerCase().includes(query.toLowerCase())
+      ))}/>
     </>
   )
+
 }
 
 export default App
